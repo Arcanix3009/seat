@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Seat Generator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 300px;
+      height: 120px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #2ecc71;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #27ae60;
+    }
+
+    .seats {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(10, 50px);
+      gap: 10px 18px;
+    }
+
+    .seat {
+      width: 50px;
+      height: 50px;
+      background: #dfe6e9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      text-align: center;
+      padding: 3px;
+    }
+
+    .filled {
+      background: #e74c3c;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 Random Classroom Seat Generator</h1>
+
+  <p>Enter all student names (one per line):</p>
+  <textarea id="names"></textarea>
+
+  <br />
+  <button onclick="assignSeats()">Randomly Assign Seats</button>
+
+  <div class="seats" id="seats"></div>
+
+  <script>
+    const totalSeats = 50;
+    const seatsDiv = document.getElementById("seats");
+
+    // Create empty seat boxes
+    for (let i = 0; i < totalSeats; i++) {
+      const div = document.createElement("div");
+      div.className = "seat";
+      div.id = "seat-" + i;
+      seatsDiv.appendChild(div);
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function assignSeats() {
+      const namesInput = document.getElementById("names").value.trim();
+
+      if (!namesInput) {
+        alert("Please enter student names first.");
+        return;
+      }
+
+      const names = namesInput.split("\n").map(n => n.trim()).filter(n => n);
+
+      if (names.length > totalSeats) {
+        alert("Too many students! Maximum is 50.");
+        return;
+      }
+
+      // Clear previous seats
+      for (let i = 0; i < totalSeats; i++) {
+        const seat = document.getElementById("seat-" + i);
+        seat.className = "seat";
+        seat.textContent = "";
+      }
+
+      const shuffledSeats = shuffle([...Array(totalSeats).keys()]);
+
+      names.forEach((name, index) => {
+        const seatIndex = shuffledSeats[index];
+        const seatDiv = document.getElementById("seat-" + seatIndex);
+        seatDiv.textContent = name;
+        seatDiv.classList.add("filled");
+      });
+    }
+  </script>
+</body>
+</html>
